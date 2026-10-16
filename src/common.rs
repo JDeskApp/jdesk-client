@@ -2454,7 +2454,34 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
     ThrottledInterval::new(i)
 }
 
+// ===== J Desk: configuração embutida =====
+// Servidor e chave ficam fixos no executável (override: o usuário não consegue trocar).
+// A chave pública vem do segredo RS_PUB_KEY do GitHub Actions, no momento da compilação.
+pub const JDESK_APP_NAME: &str = "JDesk";
+pub const JDESK_SERVER: &str = "suporte.fc3consultoria.com.br";
+pub const JDESK_PUB_KEY: &str = match option_env!("RS_PUB_KEY") {
+    Some(k) => k,
+    None => "",
+};
+
+pub fn apply_jdesk_builtin() {
+    *config::APP_NAME.write().unwrap() = JDESK_APP_NAME.to_owned();
+    {
+        let mut s = config::OVERWRITE_SETTINGS.write().unwrap();
+        s.insert("custom-rendezvous-server".to_owned(), JDESK_SERVER.to_owned());
+        s.insert("relay-server".to_owned(), JDESK_SERVER.to_owned());
+        s.insert("key".to_owned(), JDESK_PUB_KEY.to_owned());
+    }
+    {
+        let mut b = config::BUILTIN_SETTINGS.write().unwrap();
+        b.insert("hide-server-settings".to_owned(), "Y".to_owned());
+        b.insert("hide-proxy-settings".to_owned(), "Y".to_owned());
+    }
+}
+// ===== fim J Desk =====
+
 pub fn load_custom_client() {
+    apply_jdesk_builtin();
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());
