@@ -177,6 +177,9 @@ async fn start_hbbs_sync_async() {
                     if !note.is_empty() {
                         v[keys::OPTION_PRESET_NOTE] = json!(note);
                     }
+                    if let Some(codigo) = crate::common::jdesk_codigo() {
+                        v["jdesk_codigo"] = json!(codigo);
+                    }
                     let v = v.to_string();
                     let mut hash = "".to_owned();
                     if crate::is_public(&url) {
@@ -242,6 +245,9 @@ async fn start_hbbs_sync_async() {
                 }
                 let modified_at = LocalConfig::get_option("strategy_timestamp").parse::<i64>().unwrap_or(0);
                 v["modified_at"] = json!(modified_at);
+                if let Some(codigo) = crate::common::jdesk_codigo() {
+                    v["jdesk_codigo"] = json!(codigo);
+                }
                 let response = crate::post_request(url.clone(), v.to_string(), "").await;
                 if let Err(err) = &response {
                     hbb_common::throttled_log!(API_LOG_INTERVAL, warn, "Heartbeat failed: {err:?}");
@@ -284,6 +290,10 @@ fn heartbeat_url() -> String {
         Config::get_option("custom-rendezvous-server"),
     );
     if url.is_empty() || crate::is_public(&url) {
+        return "".to_owned();
+    }
+    // J Desk: only a copy downloaded for a ticket reports to the panel.
+    if crate::common::jdesk_codigo().is_none() {
         return "".to_owned();
     }
     format!("{}/api/heartbeat", url)

@@ -2466,6 +2466,12 @@ pub const JDESK_PUB_KEY: &str = match option_env!("RS_PUB_KEY") {
     Some(k) => k,
     None => "",
 };
+// Endereço do painel de atendimentos (recebe os avisos do app em /api/...).
+// Vem da variável JDESK_PAINEL do GitHub Actions; trocar de domínio = mudar a variável e recompilar.
+pub const JDESK_PAINEL: &str = match option_env!("JDESK_PAINEL") {
+    Some(s) => s,
+    None => "https://jdesk.fc3consultoria.com.br",
+};
 
 pub fn apply_jdesk_builtin() {
     *config::APP_NAME.write().unwrap() = JDESK_APP_NAME.to_owned();
@@ -2474,11 +2480,74 @@ pub fn apply_jdesk_builtin() {
         s.insert("custom-rendezvous-server".to_owned(), JDESK_SERVER.to_owned());
         s.insert("relay-server".to_owned(), JDESK_SERVER.to_owned());
         s.insert("key".to_owned(), JDESK_PUB_KEY.to_owned());
+        s.insert("api-server".to_owned(), JDESK_PAINEL.trim_end_matches('/').to_owned());
+    }
+    {
+        // Padrão: o cliente aceita a conexão com um clique (sem ditar senha).
+        // É só o padrão: um técnico ainda pode definir senha permanente no computador do cliente.
+        let mut d = config::DEFAULT_SETTINGS.write().unwrap();
+        d.insert("approve-mode".to_owned(), "click".to_owned());
     }
     {
         let mut b = config::BUILTIN_SETTINGS.write().unwrap();
         b.insert("hide-server-settings".to_owned(), "Y".to_owned());
         b.insert("hide-proxy-settings".to_owned(), "Y".to_owned());
+    }
+}
+
+/// Código do chamado lido do nome do arquivo baixado no painel
+/// (ex.: "jdesk-4F7K.exe" ou "jdesk-4F7K (1).exe" -> "4F7K").
+/// No Windows o executável portátil é extraído para outra pasta; o nome original
+/// chega pela variável RUSTDESK_APPNAME, definida pelo empacotador.
+pub fn jdesk_codigo() -> Option<String> {
+    static CODIGO: std::sync::OnceLock<Option<String>> = std::sync::OnceLock::new();
+    CODIGO
+        .get_or_init(|| {
+            let nome = std::env::var(PORTABLE_APPNAME_RUNTIME_ENV_KEY)
+                .ok()
+                .filter(|s| !s.is_empty())
+                .or_else(|| {
+                    std::env::current_exe().ok().and_then(|p| {
+                        p.file_name().map(|n| n.to_string_lossy().into_owned())
+                    })
+                })?;
+            let codigo = jdesk_codigo_do_nome(&nome);
+            if let Some(c) = &codigo {
+                log::info!("J Desk: codigo do chamado {c}");
+            }
+            codigo
+        })
+        .clone()
+}
+
+fn jdesk_codigo_do_nome(nome: &str) -> Option<String> {
+    let base = std::path::Path::new(nome)
+        .file_name()
+        .map(|n| n.to_string_lossy().to_lowercase())?;
+    let resto = &base[base.find("jdesk-")? + "jdesk-".len()..];
+    let codigo: String = resto
+        .chars()
+        .take_while(|c| c.is_ascii_alphanumeric())
+        .collect();
+    if (3..=8).contains(&codigo.len()) && codigo != "exe" {
+        Some(codigo.to_uppercase())
+    } else {
+        None
+    }
+}
+
+#[cfg(test)]
+mod jdesk_test {
+    use super::jdesk_codigo_do_nome;
+
+    #[test]
+    fn codigo_do_nome_do_arquivo() {
+        assert_eq!(jdesk_codigo_do_nome("jdesk-4F7K.exe"), Some("4F7K".to_owned()));
+        assert_eq!(jdesk_codigo_do_nome("jdesk-4f7k (1).exe"), Some("4F7K".to_owned()));
+        assert_eq!(jdesk_codigo_do_nome("C:\\Users\\x\\Downloads\\jdesk-AB2CD.exe"), Some("AB2CD".to_owned()));
+        assert_eq!(jdesk_codigo_do_nome("jdesk.exe"), None);
+        assert_eq!(jdesk_codigo_do_nome("jdesk-.exe"), None);
+        assert_eq!(jdesk_codigo_do_nome("rustdesk.exe"), None);
     }
 }
 // ===== fim J Desk =====

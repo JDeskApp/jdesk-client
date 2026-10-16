@@ -64,6 +64,7 @@ jobs:
     env:
       RS_PUB_KEY: ${{ secrets.RS_PUB_KEY }}
       JDESK_SERVER: ${{ vars.JDESK_SERVER || 'suporte.fc3consultoria.com.br' }}
+      JDESK_PAINEL: ${{ vars.JDESK_PAINEL || 'https://jdesk.fc3consultoria.com.br' }}
     runs-on: ${{ matrix.job.os }}
     strategy:
       fail-fast: false
@@ -95,6 +96,7 @@ jobs:
             exit 1
           fi
           echo "Servidor J Desk: $JDESK_SERVER"
+          echo "Painel J Desk: $JDESK_PAINEL"
 
       - name: Checkout source code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
