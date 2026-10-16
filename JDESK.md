@@ -22,6 +22,12 @@ Cliente de acesso remoto J Desk, da FC3 Consultoria, baseado no [RustDesk](https
    - Opcional: em Settings > Secrets and variables > Actions > aba Variables, crie `JDESK_SERVER` com o dominio do servidor (padrao: `suporte.fc3consultoria.com.br`). Trocar de dominio = mudar essa variavel e recompilar.
 3. Ao terminar (cerca de 1h), baixe o artefato `jdesk-windows-x64`, que contém o `jdesk.exe`.
 
+## Mac (Apple Silicon)
+
+- `.github/workflows/jdesk-macos.yml` ("J Desk - macOS (Apple Silicon)"): compila para Mac com chip Apple (M1 a M4) e entrega `jdesk-macos-apple-silicon.dmg`.
+- A marca do Mac é aplicada só durante a compilação: nome do app `JDesk.app`, link `jdesk://` no `Info.plist` e ícone gerado a partir de `res/icon.png`.
+- Sai **sem assinatura da Apple** (uso dos técnicos). Na primeira abertura: botão direito no app > Abrir > Abrir. Para distribuir a clientes, falta a conta Apple Developer (assinatura + notarização).
+
 ## Licença
 
 AGPL-3.0, a mesma do RustDesk. O código-fonte desta versão é este repositório.
