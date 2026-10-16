@@ -159,6 +159,13 @@ jobs:
           ./build.py --flutter --hwcodec --unix-file-copy-paste --screencapturekit
           ls -la ./flutter/build/macos/Build/Products/Release/
 
+      # Sem certificado da Apple: assinatura local (ad-hoc). Sem ela, o app alterado depois
+      # da compilação chega no Mac como "danificado"; com ela, abre por Ajustes > Abrir Mesmo Assim.
+      - name: Assinar (ad-hoc)
+        run: |
+          codesign --force --deep --sign - ./flutter/build/macos/Build/Products/Release/JDesk.app
+          codesign --verify --deep --strict ./flutter/build/macos/Build/Products/Release/JDesk.app
+
       - name: Criar o instalador (.dmg)
         run: |
           CREATE_DMG="$(command -v create-dmg)"
