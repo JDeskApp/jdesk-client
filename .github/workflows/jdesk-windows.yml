@@ -63,6 +63,7 @@ jobs:
     needs: [build-RustDeskTempTopMostWindow, generate-bridge]
     env:
       RS_PUB_KEY: ${{ secrets.RS_PUB_KEY }}
+      JDESK_SERVER: ${{ vars.JDESK_SERVER || 'suporte.fc3consultoria.com.br' }}
     runs-on: ${{ matrix.job.os }}
     strategy:
       fail-fast: false
@@ -93,6 +94,7 @@ jobs:
             echo "::error::Segredo RS_PUB_KEY nao configurado (Settings > Secrets and variables > Actions)."
             exit 1
           fi
+          echo "Servidor J Desk: $JDESK_SERVER"
 
       - name: Checkout source code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4

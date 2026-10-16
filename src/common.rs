@@ -2458,7 +2458,10 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
 // Servidor e chave ficam fixos no executável (override: o usuário não consegue trocar).
 // A chave pública vem do segredo RS_PUB_KEY do GitHub Actions, no momento da compilação.
 pub const JDESK_APP_NAME: &str = "JDesk";
-pub const JDESK_SERVER: &str = "suporte.fc3consultoria.com.br";
+pub const JDESK_SERVER: &str = match option_env!("JDESK_SERVER") {
+    Some(s) => s,
+    None => "suporte.fc3consultoria.com.br",
+};
 pub const JDESK_PUB_KEY: &str = match option_env!("RS_PUB_KEY") {
     Some(k) => k,
     None => "",

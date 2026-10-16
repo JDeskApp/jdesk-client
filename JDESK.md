@@ -15,6 +15,7 @@ Cliente de acesso remoto J Desk, da FC3 Consultoria, baseado no [RustDesk](https
    - Nome: `RS_PUB_KEY`
    - Valor: o conteúdo de `/opt/rustdesk/data/id_ed25519.pub` do servidor
 2. Actions > "J Desk - Windows" > Run workflow
+   - Opcional: em Settings > Secrets and variables > Actions > aba Variables, crie `JDESK_SERVER` com o dominio do servidor (padrao: `suporte.fc3consultoria.com.br`). Trocar de dominio = mudar essa variavel e recompilar.
 3. Ao terminar (cerca de 1h), baixe o artefato `jdesk-windows-x64`, que contém o `jdesk.exe`.
 
 ## Licença
