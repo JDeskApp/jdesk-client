@@ -2493,6 +2493,21 @@ pub fn apply_jdesk_builtin() {
         b.insert("hide-server-settings".to_owned(), "Y".to_owned());
         b.insert("hide-proxy-settings".to_owned(), "Y".to_owned());
     }
+    // Aberto pelo arquivo do chamado (jdesk-CODIGO.exe): é o computador do cliente,
+    // então só recebe conexões e mostra a tela simplificada do J Desk.
+    if let Some(codigo) = jdesk_codigo() {
+        {
+            let mut h = config::HARD_SETTINGS.write().unwrap();
+            h.insert("conn-type".to_owned(), "incoming".to_owned());
+            h.insert("disable-settings".to_owned(), "Y".to_owned());
+        }
+        let mut b = config::BUILTIN_SETTINGS.write().unwrap();
+        b.insert("jdesk-codigo".to_owned(), codigo);
+        b.insert(
+            "jdesk-painel".to_owned(),
+            JDESK_PAINEL.trim_end_matches('/').to_owned(),
+        );
+    }
 }
 
 /// Código do chamado lido do nome do arquivo baixado no painel

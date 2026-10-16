@@ -159,6 +159,22 @@ flutter:
     - assets/
 
   fonts:
+    # J Desk: fontes da marca (licenca SIL OFL, ver assets/fonts/OFL-*.txt)
+    - family: Figtree
+      fonts:
+        - asset: assets/fonts/Figtree-Regular.ttf
+        - asset: assets/fonts/Figtree-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Figtree-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Figtree-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Figtree-ExtraBold.ttf
+          weight: 800
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-Bold.ttf
+          weight: 700
     - family: GestureIcons
       fonts:
         - asset: assets/gestures.ttf
