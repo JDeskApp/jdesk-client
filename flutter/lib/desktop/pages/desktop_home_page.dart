@@ -99,10 +99,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           alignment: Alignment.center,
           child: loadPowered(context),
         ),
-      Align(
-        alignment: Alignment.center,
-        child: loadLogo(),
-      ),
+      const JDeskMarcaTecnico(),
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
       if (!isOutgoingOnly) buildPasswordBoard(context),

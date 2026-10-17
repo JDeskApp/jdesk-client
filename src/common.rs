@@ -2560,6 +2560,7 @@ mod jdesk_test {
         assert_eq!(jdesk_codigo_do_nome("jdesk-4F7K.exe"), Some("4F7K".to_owned()));
         assert_eq!(jdesk_codigo_do_nome("jdesk-4f7k (1).exe"), Some("4F7K".to_owned()));
         assert_eq!(jdesk_codigo_do_nome("C:\\Users\\x\\Downloads\\jdesk-AB2CD.exe"), Some("AB2CD".to_owned()));
+        assert_eq!(jdesk_codigo_do_nome("jdesk-K7MX9QPR (2).exe"), Some("K7MX9QPR".to_owned()));
         assert_eq!(jdesk_codigo_do_nome("jdesk.exe"), None);
         assert_eq!(jdesk_codigo_do_nome("jdesk-.exe"), None);
         assert_eq!(jdesk_codigo_do_nome("rustdesk.exe"), None);

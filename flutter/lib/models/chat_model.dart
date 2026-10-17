@@ -318,7 +318,7 @@ class ChatModel with ChangeNotifier {
       notifyListeners();
       await windowManager.show();
       await windowManager.setSizeAlignment(
-          kConnectionManagerWindowSizeClosedChat, Alignment.topRight);
+          kConnectionManagerWindowSizeClosedChat, Alignment.center);
     } else {
       final currentSelectedTab =
           gFFI.serverModel.tabController.state.value.selectedTabInfo;
@@ -330,7 +330,7 @@ class ChatModel with ChangeNotifier {
       requestChatInputFocus();
       await windowManager.show();
       await windowManager.setSizeAlignment(
-          kConnectionManagerWindowSizeOpenChat, Alignment.topRight);
+          kConnectionManagerWindowSizeOpenChat, Alignment.center);
       _isShowCMSidePage = !_isShowCMSidePage;
       notifyListeners();
     }
