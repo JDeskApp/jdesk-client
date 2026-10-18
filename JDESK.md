@@ -4,7 +4,7 @@ Cliente de acesso remoto J Desk, da FC3 Consultoria, baseado no [RustDesk](https
 
 ## Alterações em relação ao RustDesk original
 
-- `src/common.rs`: `apply_jdesk_builtin()` fixa o nome do app (JDesk), o servidor `suporte.fc3consultoria.com.br` (ID e relay) e a chave pública, e oculta as configurações de servidor e proxy.
+- `src/common.rs`: `apply_jdesk_builtin()` fixa o nome do app (JDesk), o servidor `suporte.fc3consultoria.com.br` (ID e relay) e a chave pública, e oculta as configurações de servidor e proxy. Texto da marca: "J Desk · Gestão de Suporte".
 - `Cargo.toml` e `flutter/windows/runner/Runner.rc`: nome do produto, descrição e `jdesk.exe`.
 - Ícones em `res/` e `flutter/windows/runner/resources/app_icon.ico`, e `flutter/assets/icon.svg`.
 - `.github/workflows/jdesk-windows.yml`: compila só o Windows x64 e entrega o `jdesk.exe`.

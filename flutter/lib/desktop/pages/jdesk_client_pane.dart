@@ -240,8 +240,8 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
           const SizedBox(height: 10),
           Text(
             _empresa.isEmpty
-                ? 'SUPORTE REMOTO'
-                : 'SUPORTE REMOTO · ${_empresa.toUpperCase()}',
+                ? 'GESTÃO DE SUPORTE'
+                : 'SUPORTE · ${_empresa.toUpperCase()}',
             textAlign: TextAlign.center,
             style: const TextStyle(
                 color: Color(0xFFA9D8D1),
@@ -429,7 +429,7 @@ class JDeskMarcaTecnico extends StatelessWidget {
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.w800)),
-                Text('SUPORTE REMOTO',
+                Text('GESTÃO DE SUPORTE',
                     style: TextStyle(
                         color: Color(0xFFA9D8D1),
                         fontSize: 10.5,
