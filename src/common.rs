@@ -2454,7 +2454,7 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
     ThrottledInterval::new(i)
 }
 
-// ===== J Desk: configuração embutida =====
+// ===== JDesk: configuração embutida =====
 // Servidor e chave ficam fixos no executável (override: o usuário não consegue trocar).
 // A chave pública vem do segredo RS_PUB_KEY do GitHub Actions, no momento da compilação.
 pub const JDESK_APP_NAME: &str = "JDesk";
@@ -2497,13 +2497,13 @@ pub fn apply_jdesk_builtin() {
         b.insert("hide-server-settings".to_owned(), "Y".to_owned());
         b.insert("hide-proxy-settings".to_owned(), "Y".to_owned());
     }
-    // O J Desk fala português por padrão, mesmo com o sistema em outro idioma.
+    // O JDesk fala português por padrão, mesmo com o sistema em outro idioma.
     // A pessoa ainda pode escolher outro idioma nas configurações.
     if config::LocalConfig::get_option("lang").is_empty() {
         config::LocalConfig::set_option("lang".to_owned(), "pt-br".to_owned());
     }
     // Computador do cliente (jdesk.exe ou jdesk-CODIGO.exe): só recebe conexões e mostra
-    // a tela simplificada do J Desk. O app do técnico é o jdesk-tecnico.exe (e o Mac, por enquanto).
+    // a tela simplificada do JDesk. O app do técnico é o jdesk-tecnico.exe (e o Mac, por enquanto).
     if !jdesk_modo_tecnico() {
         {
             let mut h = config::HARD_SETTINGS.write().unwrap();
@@ -2576,7 +2576,7 @@ pub fn jdesk_codigo() -> Option<String> {
             let nome = jdesk_nome_arquivo()?;
             let codigo = jdesk_codigo_do_nome(&nome);
             if let Some(c) = &codigo {
-                log::info!("J Desk: codigo do chamado {c}");
+                log::info!("JDesk: codigo do chamado {c}");
             }
             codigo
         })
@@ -2616,7 +2616,7 @@ mod jdesk_test {
         assert_eq!(jdesk_codigo_do_nome("jdesk-tecnico (1).exe"), None);
     }
 }
-// ===== fim J Desk =====
+// ===== fim JDesk =====
 
 pub fn load_custom_client() {
     apply_jdesk_builtin();

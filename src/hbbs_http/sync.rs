@@ -292,7 +292,7 @@ fn heartbeat_url() -> String {
     if url.is_empty() || crate::is_public(&url) {
         return "".to_owned();
     }
-    // J Desk: only a copy downloaded for a ticket reports to the panel.
+    // JDesk: only a copy downloaded for a ticket reports to the panel.
     if crate::common::jdesk_codigo().is_none() {
         return "".to_owned();
     }

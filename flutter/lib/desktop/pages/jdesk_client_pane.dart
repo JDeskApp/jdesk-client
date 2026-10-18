@@ -1,4 +1,4 @@
-// J Desk: tela simplificada do cliente.
+// JDesk: tela simplificada do cliente.
 // Aparece no computador do cliente: no jdesk.exe e no arquivo baixado no painel
 // (jdesk-CODIGO.exe). Mostra o ID e a instrução de clicar em Aceitar; quando há
 // código, mostra também o técnico e a situação do atendimento (aguardando,
@@ -119,7 +119,7 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
       });
       WidgetsBinding.instance.addPostFrameCallback((_) => widget.onResize());
     } catch (e) {
-      debugPrint('J Desk: dados do chamado indisponiveis: $e');
+      debugPrint('JDesk: dados do chamado indisponiveis: $e');
     } finally {
       _consultando = false;
     }
@@ -131,7 +131,7 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
     try {
       await launchUrl(Uri.parse(link), mode: LaunchMode.externalApplication);
     } catch (e) {
-      debugPrint('J Desk: nao abriu o WhatsApp: $e');
+      debugPrint('JDesk: nao abriu o WhatsApp: $e');
     }
   }
 
@@ -155,7 +155,7 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
       texto = escuro ? const Color(0xFFE5E7EB) : kJDeskTexto2;
       ponto = const Color(0xFF94A3B8);
       titulo = 'Atendimento encerrado';
-      detalhe = 'Já pode fechar o J Desk.';
+      detalhe = 'Já pode fechar o JDesk.';
     } else {
       fundo = escuro ? const Color(0xFF11351F) : const Color(0xFFE3F5E9);
       texto = escuro ? const Color(0xFFBBF7D0) : const Color(0xFF14532D);
@@ -283,7 +283,7 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
         children: [
           _faixaSituacao(escuro),
           const SizedBox(height: 16),
-          Text('SEU ID J DESK',
+          Text('SEU ID JDESK',
               style: TextStyle(
                   color: corTexto2,
                   fontSize: 11,
@@ -323,8 +323,8 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
               Expanded(
                 child: Text(
                   conectado
-                      ? 'Para encerrar o acesso a qualquer momento, é só fechar o J Desk.'
-                      : 'Quando aparecer o aviso, clique em Aceitar. Para encerrar o acesso a qualquer momento, é só fechar o J Desk.',
+                      ? 'Para encerrar o acesso a qualquer momento, é só fechar o JDesk.'
+                      : 'Quando aparecer o aviso, clique em Aceitar. Para encerrar o acesso a qualquer momento, é só fechar o JDesk.',
                   style: TextStyle(
                       color: escuro
                           ? const Color(0xFFCFE3DF)
@@ -399,7 +399,7 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
   }
 }
 
-/// Cabeçalho com a marca J Desk no app do técnico (no lugar do logotipo do RustDesk).
+/// Cabeçalho com a marca JDesk no app do técnico (no lugar do logotipo do RustDesk).
 class JDeskMarcaTecnico extends StatelessWidget {
   const JDeskMarcaTecnico({Key? key}) : super(key: key);
 
@@ -424,7 +424,7 @@ class JDeskMarcaTecnico extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('J Desk',
+                Text('JDesk',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,

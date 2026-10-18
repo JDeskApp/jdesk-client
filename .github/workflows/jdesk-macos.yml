@@ -1,8 +1,8 @@
-name: J Desk - macOS (Apple Silicon)
+name: JDesk - macOS (Apple Silicon)
 
-# Compila o J Desk para Mac com chip Apple (M1 a M4) e entrega um .dmg SEM assinatura da Apple.
+# Compila o JDesk para Mac com chip Apple (M1 a M4) e entrega um .dmg SEM assinatura da Apple.
 # Uso previsto: computadores dos técnicos. Na primeira abertura: botão direito > Abrir > Abrir.
-# Rodar manualmente: Actions > "J Desk - macOS (Apple Silicon)" > Run workflow.
+# Rodar manualmente: Actions > "JDesk - macOS (Apple Silicon)" > Run workflow.
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ jobs:
       JDESK_SERVER: ${{ vars.JDESK_SERVER || 'suporte.fc3consultoria.com.br' }}
       JDESK_PAINEL: ${{ vars.JDESK_PAINEL || 'https://jdesk.fc3consultoria.com.br' }}
     steps:
-      - name: Conferir configuracao do J Desk
+      - name: Conferir configuracao do JDesk
         shell: bash
         run: |
           if [ -z "$RS_PUB_KEY" ]; then
             echo "::error::Segredo RS_PUB_KEY nao configurado (Settings > Secrets and variables > Actions)."
             exit 1
           fi
-          echo "Servidor J Desk: $JDESK_SERVER"
-          echo "Painel J Desk: $JDESK_PAINEL"
+          echo "Servidor JDesk: $JDESK_SERVER"
+          echo "Painel JDesk: $JDESK_PAINEL"
 
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410 # v6
@@ -50,7 +50,7 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Marca J Desk no app do Mac (nome, link jdesk:// e icone)
+      - name: Marca JDesk no app do Mac (nome, link jdesk:// e icone)
         shell: bash
         run: |
           set -e
@@ -61,7 +61,7 @@ jobs:
           sed -i '' -e 's#<string>rustdesk</string>#<string>jdesk</string>#' flutter/macos/Runner/Info.plist
           grep -n "PRODUCT_NAME" flutter/macos/Runner/Configs/AppInfo.xcconfig
           grep -n "<string>jdesk</string>" flutter/macos/Runner/Info.plist
-          # Icone J Desk a partir de res/icon.png
+          # Icone JDesk a partir de res/icon.png
           ICONSET=/tmp/AppIcon.iconset
           mkdir -p "$ICONSET"
           for s in 16 32 128 256 512; do
@@ -148,7 +148,7 @@ jobs:
             exit 1
           fi
 
-      - name: Build J Desk
+      - name: Build JDesk
         run: |
           MIN_MACOS_VERSION="12.3"
           sed -i -e "s/MACOSX_DEPLOYMENT_TARGET\=[0-9]*.[0-9]*/MACOSX_DEPLOYMENT_TARGET=${MIN_MACOS_VERSION}/" build.py
@@ -171,7 +171,7 @@ jobs:
           CREATE_DMG="$(command -v create-dmg)"
           CREATE_DMG="$(readlink -f "$CREATE_DMG")"
           sed -i -e 's/MAXIMUM_UNMOUNTING_ATTEMPTS=3/MAXIMUM_UNMOUNTING_ATTEMPTS=7/' "$CREATE_DMG"
-          create-dmg --volname "J Desk" --icon "JDesk.app" 200 190 --hide-extension "JDesk.app" --window-size 800 400 --app-drop-link 600 185 jdesk-macos-apple-silicon.dmg ./flutter/build/macos/Build/Products/Release/JDesk.app
+          create-dmg --volname "JDesk" --icon "JDesk.app" 200 190 --hide-extension "JDesk.app" --window-size 800 400 --app-drop-link 600 185 jdesk-macos-apple-silicon.dmg ./flutter/build/macos/Build/Products/Release/JDesk.app
 
       - name: Publicar jdesk-macos-apple-silicon.dmg
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

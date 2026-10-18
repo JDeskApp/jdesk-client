@@ -1,7 +1,7 @@
-name: J Desk - Windows
+name: JDesk - Windows
 
-# Compila o cliente J Desk (Windows x64) e entrega o jdesk.exe como artefato da execucao.
-# Rodar manualmente: Actions > "J Desk - Windows" > Run workflow.
+# Compila o cliente JDesk (Windows x64) e entrega o jdesk.exe como artefato da execucao.
+# Rodar manualmente: Actions > "JDesk - Windows" > Run workflow.
 
 on:
   workflow_dispatch:
@@ -88,15 +88,15 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      - name: Checar chave do servidor J Desk
+      - name: Checar chave do servidor JDesk
         shell: bash
         run: |
           if [ -z "$RS_PUB_KEY" ]; then
             echo "::error::Segredo RS_PUB_KEY nao configurado (Settings > Secrets and variables > Actions)."
             exit 1
           fi
-          echo "Servidor J Desk: $JDESK_SERVER"
-          echo "Painel J Desk: $JDESK_PAINEL"
+          echo "Servidor JDesk: $JDESK_SERVER"
+          echo "Painel JDesk: $JDESK_PAINEL"
 
       - name: Checkout source code
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
