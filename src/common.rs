@@ -2483,10 +2483,14 @@ pub fn apply_jdesk_builtin() {
         s.insert("api-server".to_owned(), JDESK_PAINEL.trim_end_matches('/').to_owned());
     }
     {
-        // Padrão: o cliente aceita a conexão com um clique (sem ditar senha).
-        // É só o padrão: um técnico ainda pode definir senha permanente no computador do cliente.
+        // Padrão no cliente: aceita a conexão com um clique (sem ditar senha). É só o padrão:
+        // um técnico ainda pode definir senha permanente no computador do cliente.
+        // No app do técnico fica o padrão do RustDesk (senha temporária/fixa ou clique), para ele
+        // também poder receber conexões, por exemplo ao mostrar a tela para outro técnico.
         let mut d = config::DEFAULT_SETTINGS.write().unwrap();
-        d.insert("approve-mode".to_owned(), "click".to_owned());
+        if !jdesk_modo_tecnico() {
+            d.insert("approve-mode".to_owned(), "click".to_owned());
+        }
     }
     {
         let mut b = config::BUILTIN_SETTINGS.write().unwrap();
