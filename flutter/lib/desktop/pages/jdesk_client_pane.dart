@@ -1,7 +1,8 @@
 // J Desk: tela simplificada do cliente.
-// Aparece quando o app foi aberto a partir do arquivo baixado no painel
-// (jdesk-CODIGO.exe). Mostra o ID, o técnico, a situação do atendimento
-// (aguardando, técnico conectado, encerrado) e a instrução de clicar em Aceitar.
+// Aparece no computador do cliente: no jdesk.exe e no arquivo baixado no painel
+// (jdesk-CODIGO.exe). Mostra o ID e a instrução de clicar em Aceitar; quando há
+// código, mostra também o técnico e a situação do atendimento (aguardando,
+// técnico conectado, encerrado). O app do técnico é o jdesk-tecnico.exe.
 import 'dart:async';
 import 'dart:convert';
 
@@ -26,7 +27,10 @@ const kJDeskLaranja = Color(0xFFF59E0B);
 /// Código do chamado (ex.: K7MX9QPR) quando o app veio do painel; vazio no app do técnico.
 String jdeskCodigo() => bind.mainGetBuildinOption(key: 'jdesk-codigo');
 
-bool isJDeskClientMode() => bind.isIncomingOnly() && jdeskCodigo().isNotEmpty;
+bool isJDeskClientMode() =>
+    bind.isIncomingOnly() &&
+    (bind.mainGetBuildinOption(key: 'jdesk-cliente') == 'Y' ||
+        jdeskCodigo().isNotEmpty);
 
 /// Códigos de 8 caracteres aparecem em dois blocos (K7MX-9QPR), como no painel.
 String jdeskCodigoFormatado(String c) =>
@@ -67,6 +71,8 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
   @override
   void initState() {
     super.initState();
+    // Sem código (jdesk.exe baixado direto) não há atendimento no painel para consultar.
+    if (jdeskCodigo().isEmpty) return;
     _carregar();
     // A situação muda quando o técnico conecta ou desconecta: consulta o painel a cada 2 s
     // (uma consulta por vez), para o aviso "técnico conectado" aparecer logo.
@@ -210,6 +216,8 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
       subtitulo = 'O atendimento está em andamento.';
     } else if (encerrado) {
       subtitulo = 'Obrigado! Este atendimento foi concluído.';
+    } else if (codigo.isEmpty) {
+      subtitulo = 'Passe o seu ID ao técnico. Quando ele se conectar, clique em Aceitar.';
     } else if (_tecnico.isEmpty) {
       subtitulo = 'O técnico já foi avisado e vai se conectar em instantes.';
     } else {
@@ -296,7 +304,10 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
             ),
           ),
           const SizedBox(height: 4),
-          Text('Só passe este número se o técnico pedir.',
+          Text(
+              codigo.isEmpty
+                  ? 'Informe este número ao técnico.'
+                  : 'Só passe este número se o técnico pedir.',
               textAlign: TextAlign.center,
               style: TextStyle(color: corTexto2, fontSize: 12)),
           const SizedBox(height: 14),
@@ -332,14 +343,16 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Row(
         children: [
-          Text('Atendimento ',
-              style: TextStyle(color: corTexto2, fontSize: 12)),
-          Text(jdeskCodigoFormatado(codigo),
-              style: TextStyle(
-                  fontFamily: 'JetBrainsMono',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 12,
-                  color: corTexto)),
+          if (codigo.isNotEmpty)
+            Text('Atendimento ',
+                style: TextStyle(color: corTexto2, fontSize: 12)),
+          if (codigo.isNotEmpty)
+            Text(jdeskCodigoFormatado(codigo),
+                style: TextStyle(
+                    fontFamily: 'JetBrainsMono',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    color: corTexto)),
           const Spacer(),
           if (_telefone.isNotEmpty)
             Flexible(

@@ -356,10 +356,14 @@ jobs:
         run: |
           mkdir -p ./JDesk
           mv ./SignOutput/rustdesk-*-x86_64.exe ./JDesk/jdesk.exe
+          # Mesmo programa: o nome do arquivo decide o modo (jdesk.exe = cliente, jdesk-tecnico.exe = técnico).
+          cp ./JDesk/jdesk.exe ./JDesk/jdesk-tecnico.exe
           ls -l ./JDesk
 
-      - name: Publicar jdesk.exe
+      - name: Publicar jdesk.exe e jdesk-tecnico.exe
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: jdesk-windows-x64
-          path: ./JDesk/jdesk.exe
+          path: |
+            ./JDesk/jdesk.exe
+            ./JDesk/jdesk-tecnico.exe

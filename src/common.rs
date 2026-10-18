@@ -2493,21 +2493,69 @@ pub fn apply_jdesk_builtin() {
         b.insert("hide-server-settings".to_owned(), "Y".to_owned());
         b.insert("hide-proxy-settings".to_owned(), "Y".to_owned());
     }
-    // Aberto pelo arquivo do chamado (jdesk-CODIGO.exe): é o computador do cliente,
-    // então só recebe conexões e mostra a tela simplificada do J Desk.
-    if let Some(codigo) = jdesk_codigo() {
+    // O J Desk fala português por padrão, mesmo com o sistema em outro idioma.
+    // A pessoa ainda pode escolher outro idioma nas configurações.
+    if config::LocalConfig::get_option("lang").is_empty() {
+        config::LocalConfig::set_option("lang".to_owned(), "pt-br".to_owned());
+    }
+    // Computador do cliente (jdesk.exe ou jdesk-CODIGO.exe): só recebe conexões e mostra
+    // a tela simplificada do J Desk. O app do técnico é o jdesk-tecnico.exe (e o Mac, por enquanto).
+    if !jdesk_modo_tecnico() {
         {
             let mut h = config::HARD_SETTINGS.write().unwrap();
             h.insert("conn-type".to_owned(), "incoming".to_owned());
             h.insert("disable-settings".to_owned(), "Y".to_owned());
         }
         let mut b = config::BUILTIN_SETTINGS.write().unwrap();
-        b.insert("jdesk-codigo".to_owned(), codigo);
-        b.insert(
-            "jdesk-painel".to_owned(),
-            JDESK_PAINEL.trim_end_matches('/').to_owned(),
-        );
+        b.insert("jdesk-cliente".to_owned(), "Y".to_owned());
+        // Aberto pelo arquivo do chamado: a tela mostra também os dados do atendimento.
+        if let Some(codigo) = jdesk_codigo() {
+            b.insert("jdesk-codigo".to_owned(), codigo);
+            b.insert(
+                "jdesk-painel".to_owned(),
+                JDESK_PAINEL.trim_end_matches('/').to_owned(),
+            );
+        }
     }
+}
+
+/// Nome do arquivo que foi aberto. No Windows o executável portátil é extraído para outra pasta;
+/// o nome original chega pela variável RUSTDESK_APPNAME, definida pelo empacotador.
+fn jdesk_nome_arquivo() -> Option<String> {
+    std::env::var(PORTABLE_APPNAME_RUNTIME_ENV_KEY)
+        .ok()
+        .filter(|s| !s.is_empty())
+        .or_else(|| {
+            std::env::current_exe()
+                .ok()
+                .and_then(|p| p.file_name().map(|n| n.to_string_lossy().into_owned()))
+        })
+}
+
+/// App do técnico: arquivo com "tecnico" no nome (jdesk-tecnico.exe) ou já usado assim
+/// neste computador (vale também depois de instalado). No Mac, por enquanto, sempre técnico.
+pub fn jdesk_modo_tecnico() -> bool {
+    static TECNICO: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+    *TECNICO.get_or_init(|| {
+        if cfg!(target_os = "macos") {
+            return true;
+        }
+        let pelo_nome = jdesk_nome_arquivo()
+            .map(|n| jdesk_nome_e_tecnico(&n))
+            .unwrap_or(false);
+        if pelo_nome {
+            if config::LocalConfig::get_option("jdesk-tecnico") != "Y" {
+                config::LocalConfig::set_option("jdesk-tecnico".to_owned(), "Y".to_owned());
+            }
+            return true;
+        }
+        config::LocalConfig::get_option("jdesk-tecnico") == "Y"
+    })
+}
+
+fn jdesk_nome_e_tecnico(nome: &str) -> bool {
+    let n = nome.to_lowercase();
+    n.contains("tecnico") || n.contains("técnico")
 }
 
 /// Código do chamado lido do nome do arquivo baixado no painel
@@ -2518,14 +2566,10 @@ pub fn jdesk_codigo() -> Option<String> {
     static CODIGO: std::sync::OnceLock<Option<String>> = std::sync::OnceLock::new();
     CODIGO
         .get_or_init(|| {
-            let nome = std::env::var(PORTABLE_APPNAME_RUNTIME_ENV_KEY)
-                .ok()
-                .filter(|s| !s.is_empty())
-                .or_else(|| {
-                    std::env::current_exe().ok().and_then(|p| {
-                        p.file_name().map(|n| n.to_string_lossy().into_owned())
-                    })
-                })?;
+            if jdesk_modo_tecnico() {
+                return None;
+            }
+            let nome = jdesk_nome_arquivo()?;
             let codigo = jdesk_codigo_do_nome(&nome);
             if let Some(c) = &codigo {
                 log::info!("J Desk: codigo do chamado {c}");
@@ -2544,7 +2588,7 @@ fn jdesk_codigo_do_nome(nome: &str) -> Option<String> {
         .chars()
         .take_while(|c| c.is_ascii_alphanumeric())
         .collect();
-    if (3..=8).contains(&codigo.len()) && codigo != "exe" {
+    if (3..=8).contains(&codigo.len()) && codigo != "exe" && !jdesk_nome_e_tecnico(&base) {
         Some(codigo.to_uppercase())
     } else {
         None
@@ -2564,6 +2608,8 @@ mod jdesk_test {
         assert_eq!(jdesk_codigo_do_nome("jdesk.exe"), None);
         assert_eq!(jdesk_codigo_do_nome("jdesk-.exe"), None);
         assert_eq!(jdesk_codigo_do_nome("rustdesk.exe"), None);
+        assert_eq!(jdesk_codigo_do_nome("jdesk-tecnico.exe"), None);
+        assert_eq!(jdesk_codigo_do_nome("jdesk-tecnico (1).exe"), None);
     }
 }
 // ===== fim J Desk =====
