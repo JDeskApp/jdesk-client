@@ -61,13 +61,16 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
   String _situacao = 'aguardando';
   String _tecnicoConectado = '';
   Timer? _timer;
+  // Evita consultas sobrepostas quando a hospedagem do painel demora a responder.
+  bool _consultando = false;
 
   @override
   void initState() {
     super.initState();
     _carregar();
-    // A situação muda quando o técnico conecta ou desconecta: consulta o painel a cada 5 s.
-    _timer = Timer.periodic(const Duration(seconds: 5), (_) => _carregar());
+    // A situação muda quando o técnico conecta ou desconecta: consulta o painel a cada 2 s
+    // (uma consulta por vez), para o aviso "técnico conectado" aparecer logo.
+    _timer = Timer.periodic(const Duration(seconds: 2), (_) => _carregar());
   }
 
   @override
@@ -80,10 +83,12 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
     final codigo = jdeskCodigo();
     final painel = bind.mainGetBuildinOption(key: 'jdesk-painel');
     if (codigo.isEmpty || painel.isEmpty) return;
+    if (_consultando) return;
+    _consultando = true;
     try {
       final resp = await http
           .get(Uri.parse('$painel/api/chamado/$codigo'))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 8));
       if (resp.statusCode != 200) return;
       final dados = jsonDecode(utf8.decode(resp.bodyBytes));
       if (dados is! Map) return;
@@ -109,6 +114,8 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
       WidgetsBinding.instance.addPostFrameCallback((_) => widget.onResize());
     } catch (e) {
       debugPrint('J Desk: dados do chamado indisponiveis: $e');
+    } finally {
+      _consultando = false;
     }
   }
 

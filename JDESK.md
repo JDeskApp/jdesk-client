@@ -12,7 +12,7 @@ Cliente de acesso remoto J Desk, da FC3 Consultoria, baseado no [RustDesk](https
   - `src/common.rs`: `api-server` fixo no endereço do painel (`JDESK_PAINEL`), aceite com um clique como padrão (`approve-mode=click`) e `jdesk_codigo()`, que lê o código do chamado no nome do arquivo (`jdesk-4F7K.exe`).
   - `src/hbbs_http/sync.rs`: o sinal de vida (`/api/heartbeat`) e as informações do computador (`/api/sysinfo`) levam o código, e só são enviados quando o arquivo tem código. As conexões são avisadas em `/api/audit/conn` pelo próprio RustDesk.
 
-- Tela do cliente (`flutter/lib/desktop/pages/jdesk_client_pane.dart`): consulta `GET /api/chamado/CODIGO` a cada 5 s e mostra a situação real do atendimento (aguardando o técnico, técnico conectado ou encerrado), o código no formato K7MX-9QPR e o WhatsApp de ajuda como link.
+- Tela do cliente (`flutter/lib/desktop/pages/jdesk_client_pane.dart`): consulta `GET /api/chamado/CODIGO` a cada 2 s (uma consulta por vez) e mostra a situação real do atendimento (aguardando o técnico, técnico conectado ou encerrado), o código no formato K7MX-9QPR e o WhatsApp de ajuda como link.
 - Janela de conexão (a que pede "Aceitar"): cores do J Desk e aberta no centro da tela, por cima da janela do J Desk, em vez de no canto direito (`main.dart`, `models/chat_model.dart`, `desktop/pages/server_page.dart`).
 - App do técnico: cabeçalho com a marca J Desk no lugar do logotipo (`desktop_home_page.dart`).
 
