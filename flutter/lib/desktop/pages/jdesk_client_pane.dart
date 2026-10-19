@@ -217,7 +217,7 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
     } else if (encerrado) {
       subtitulo = 'Obrigado! Este atendimento foi concluído.';
     } else if (codigo.isEmpty) {
-      subtitulo = 'Passe o seu ID ao técnico. Quando ele se conectar, clique em Aceitar.';
+      subtitulo = 'Passe o ID e a senha abaixo ao técnico, ou clique em Aceitar quando ele se conectar.';
     } else if (_tecnico.isEmpty) {
       subtitulo = 'O técnico já foi avisado e vai se conectar em instantes.';
     } else {
@@ -303,11 +303,32 @@ class _JDeskClientPaneState extends State<JDeskClientPane> {
                   color: corTexto),
             ),
           ),
+          const SizedBox(height: 10),
+          Text('SENHA DE USO ÚNICO',
+              style: TextStyle(
+                  color: corTexto2,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.0)),
+          const SizedBox(height: 2),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: gFFI.serverModel.serverPasswd,
+            builder: (context, value, child) => SelectableText(
+              value.text.isEmpty ? '-' : value.text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontFamily: 'JetBrainsMono',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 22,
+                  letterSpacing: 1.5,
+                  color: corTexto),
+            ),
+          ),
           const SizedBox(height: 4),
           Text(
               codigo.isEmpty
-                  ? 'Informe este número ao técnico.'
-                  : 'Só passe este número se o técnico pedir.',
+                  ? 'Informe o ID e a senha ao técnico.'
+                  : 'Só passe o ID e a senha se o técnico pedir.',
               textAlign: TextAlign.center,
               style: TextStyle(color: corTexto2, fontSize: 12)),
           const SizedBox(height: 14),

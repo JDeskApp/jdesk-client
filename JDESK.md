@@ -9,7 +9,7 @@ Cliente de acesso remoto JDesk, da FC3 Consultoria, baseado no [RustDesk](https:
 - Ícones em `res/` e `flutter/windows/runner/resources/app_icon.ico`, e `flutter/assets/icon.svg`.
 - `.github/workflows/jdesk-windows.yml`: compila só o Windows x64 e entrega o `jdesk.exe`.
 - Integração com o painel de atendimentos:
-  - `src/common.rs`: `api-server` fixo no endereço do painel (`JDESK_PAINEL`), aceite com um clique como padrão (`approve-mode=click`) e `jdesk_codigo()`, que lê o código do chamado no nome do arquivo (`jdesk-4F7K.exe`).
+  - `src/common.rs`: `api-server` fixo no endereço do painel (`JDESK_PAINEL`), sem `approve-mode` fixo (vale senha ou clique em Aceitar) e `jdesk_codigo()`, que lê o código do chamado no nome do arquivo (`jdesk-4F7K.exe`).
   - `src/hbbs_http/sync.rs`: o sinal de vida (`/api/heartbeat`) e as informações do computador (`/api/sysinfo`) levam o código, e só são enviados quando o arquivo tem código. As conexões são avisadas em `/api/audit/conn` pelo próprio RustDesk.
 
 - **Modo pelo nome do arquivo** (`src/common.rs`, `apply_jdesk_builtin()` e `jdesk_modo_tecnico()`): o mesmo programa vira
