@@ -2484,7 +2484,6 @@ pub fn apply_jdesk_builtin() {
     }
     // Sem "approve-mode" fixo: vale o padrão do RustDesk (senha ou clique em Aceitar), em todos os modos.
     // Assim o cliente vê a senha de uso único para passar ao técnico e também pode só clicar em Aceitar.
-    }
     {
         let mut b = config::BUILTIN_SETTINGS.write().unwrap();
         b.insert("hide-server-settings".to_owned(), "Y".to_owned());
